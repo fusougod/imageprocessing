@@ -7,7 +7,7 @@ class ImageProcessorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Advanced Image Processing Tool")
-        self.root.geometry("900x700")  # Initial size, now resizable
+        self.root.geometry("1368x768")  # Initial size, now resizable
         
         # Set custom style
         self.style = ttk.Style()
@@ -358,30 +358,26 @@ class ImageProcessorApp:
                 messagebox.showerror("Error", f"Failed to apply filters: {e}")
 
     def resize_image(self):
-        if self.image:
+        if self.original_image:
             try:
-                # Parse resolution from dropdown
                 resolution = self.resolution_var.get()
                 width, height = map(int, resolution.split(" ")[0].split("x"))
-
-                # Resize to exact dimensions
-                self.image = self.original_image.copy()
-                self.image = self.image.resize((width, height), Image.Resampling.LANCZOS)
-                self.display_image(self.image)
+                self.original_image = self.original_image.resize((width, height), Image.Resampling.LANCZOS)
+                self.apply_filters()
                 self.status_label.config(text=f"Resized image to {resolution}")
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to resize image: {e}")
 
     def crop_image(self):
-        if self.image:
+        if self.original_image:
             try:
                 width, height = self.original_image.size
-                left = width * 0.25
-                top = height * 0.25
-                right = width * 0.75
-                bottom = height * 0.75
-                self.image = self.original_image.crop((left, top, right, bottom))
-                self.display_image(self.image)
+                left = int(width * 0.25)
+                top = int(height * 0.25)
+                right = int(width * 0.75)
+                bottom = int(height * 0.75)
+                self.original_image = self.original_image.crop((left, top, right, bottom))
+                self.apply_filters()
                 self.status_label.config(text="Cropped image to center")
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to crop image: {e}")
